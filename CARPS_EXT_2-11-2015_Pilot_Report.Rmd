@@ -10,8 +10,6 @@ output:
 
 # Report Details
 
-[PILOT/COPILOT ENTER RELEVANT REPORT DETAILS HERE]
-
 ```{r}
 articleID <- 2-11-2015  # insert the article ID code here e.g., "10-3-2015_PS"
 reportType <- 'Pilot'  # specify whether this is the 'pilot' report or 'final' report
@@ -28,26 +26,30 @@ completionDate <- as.Date("11/04/18",format= "%m/%d/%y") # copilot insert the da
 
 #### Methods summary: 
 
-[PILOT/COPILOT write a brief summary of the methods underlying the target outcomes written in your own words]
+The authors assamble an experiment where 5-years-olds learned a sets of pictures with pairs of objects associated to a cartoon character to investigate the effects of consolidation on children's memory by introducing a 1 min delay between learning and testing in the no-delay experiment. hree learning phases, 1 and 3 presented identical contingencies and 2 different contingencies. Darby & Sloutsky (2015) also evaluated the results for interference and savings following a 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) analysis of variance (ANOVA). 
 
 ------
 
 #### Target outcomes: 
 
-[PILOT copy and paste the target outcomes identified in targetOutcomes.md]  
+For this article you should focus on the findings reported in the results section for Experiment 1.
+
+Specifically, you should attempt to reproduce all descriptive and inferential analyses reported in the text below and associated tables/figures:
+
+No-delay condition. Results in the no-delay condition pointed to substantial retroactive interference, which was confirmed by a 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures analysis of variance (ANOVA), which revealed a significant interaction, F(1, 24) = 13.04, p = .001, ηp 2 = .35. Planned comparisons indicated that accuracy significantly decreased for overlapping pairs, t(24) = 6.82, p < .001, Cohen’s d = 1.39, but not for unique pairs, p = .46. To determine the extent of retroactive interference effects on children’s memory, we also measured savings effects. Results pointed to savings for unique but not for overlapping pairs: A 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures ANOVA revealed a significant interaction, F(1, 22) = 12.02, p = .002, ηp 2 = .33, with savings transpiring for unique pairs, t(24) = 5.82, p < .001, d = 1.19, but not for overlapping pairs, p = .56. Substantial retroactive interference coupled with no savings for overlapping pairs points to catastrophic- like levels of retroactive interference, which replicates our previous findings (Darby & Sloutsky, 2015).
+
+  Also attempt to reproduce Figure2 Experiment 1 No Delay only.
+
+Note Make sure to use the original article for additional context and information about any necessary pre-processing steps. Also check for additional supplementary materials that may provide supporting documentation for analysis procedures.
 
 ------
 
-[PILOT/COPILOT DO NOT CHANGE THE CODE IN THE CHUNK BELOW]  
-
 ```{r global_options, include=FALSE}
-# sets up some formatting options for the R Markdown document
+# sets up some formatting options for the R Markdown document. DO NOT CHANGE
 knitr::opts_chunk$set(echo=TRUE, warning=FALSE, message=FALSE)
 ```
 
 # Step 1: Load packages and prepare report object
-
-[PILOT/COPILOT Some useful packages are being loaded below. You can add any additional ones you might need too.]
 
 ```{r}
 # load packages
@@ -56,9 +58,17 @@ library(knitr) # for kable table formating
 library(haven) # import and export 'SPSS', 'Stata' and 'SAS' Files
 library(readxl) # import excel files
 library(CARPSreports) # custom report functions
+
+library('dplyr')      # for data manipulation
+library('tidyr')      # for reshaping data
+
+library('ggplot2')    # plotting data
+library('scales')     # for scale_y_continuous(label = percent)
+library('ggthemes')   # for scale_fill_few('medium')
+knitr::opts_chunk$set(comment = NA)
+options(ztable.type = 'html')
 ```
 
-[PILOT/COPILOT DO NOT MAKE CHANGES TO THE CODE CHUNK BELOW]
 
 ```{r}
 # Prepare report object. This will be updated automatically by the reproCheck function each time values are compared
@@ -68,30 +78,106 @@ reportObject <- data.frame(dummyRow = TRUE, reportedValue = NA, obtainedValue = 
 # Step 2: Load data
 
 ```{r}
+Data <- read_excel("~/Documents/GitHub/CARPS_EXT_2-11-2015/data/All Data for Repository-Final_gp.xlsx")
+str(Data)
+head(Data)
 ```
+
+```{r}
+summary(Data)
+```
+
 
 # Step 3: Tidy data
 
 ```{r}
+#The data is already tidy
 ```
 
 # Step 4: Run analysis
 
 ## Pre-processing
 
-[you can remove this section if no pre-processing is required]
-
 ```{r}
+# get the data clean 
+d <- Data %>%
+  rename(pair_type = `pair type`) 
 ```
 
 ## Descriptive statistics
 
 ```{r}
+
+# summarize by the right grouping factors 
+d_summary <- d %>%
+  filter(experiment == "Experiment 1 No Delay") %>%
+  group_by(experiment, phase, pair_type, block) %>%
+  summarise(mean = mean(accuracy), 
+            sd = sd(accuracy)) 
+
+# output step - format into a wide table
+d_summary %>%
+  select(-sd) %>%
+  spread(block, mean)
+
+d_summary %>%
+  select(-mean) %>%
+  spread(block, sd)
+
+```
+
+
+
+
+```{r}
+# savings
+d_savings = d %>%
+  filter((phase %in% c(1, 3)) & block == 1) %>%
+  spread(phase, accuracy) %>%
+  mutate(savings=`3`-`1`)
+
+```
+
+```{r}
+# retroactive interference
+d %>% 
+  filter((phase == 1 & block == 5) | (phase == 3 & block ==1 ))%>% 
+  select(-block)%>% 
+  spread(phase, accuracy)%>% 
+  mutate(pre_ri =`1` - `3`)%>% 
+  select(-`1`,-`3`)%>% 
+  spread(pair_type, pre_ri)
+```
+
+
+
+
+
+
+
+
+```{r}
+# create a reusable ggplot object *without* data = data.frame()
+
+gg_prop <- ggplot(data = data.frame()
+                  , aes(x = cyl, y = prop, fill = gear)) + 
+  geom_bar(stat = 'identity', position = 'dodge', alpha = 2/3) +  
+  scale_y_continuous(labels = percent) +    
+  scale_fill_few('medium', drop = FALSE) +              # keep levels, if data is filtered
+  labs(x = 'Cylinders', y = NULL, fill = 'Gears'
+       , title = 'Proportions in Sub-groups by Group')  # what's the reader looking at?
 ```
 
 ## Inferential statistics
 
 ```{r}
+#Retroactive interference is the difference in accuracy (proportion of correct responses) in Phase 1 Block 5 and Phase 3 Block 1 separately for overlapping and unique pairs and then determining the difference between results for each pair type. 
+#Savings is the difference in accuracy between Phase 1 Block 1 and Phase 3 Block 1, separately for overlapping and unique pairs. See Figure 2 for raw accuracy.
+KeyAnalysis <- aov(accuracy ~ `pair type` * phase, data = Data)
+Output <- summary(KeyAnalysis)
+Output
+EtaSquared <- etaSquared(KeyAnalysis)
+EtaSquared
 ```
 
 # Step 5: Conclusion
@@ -107,7 +193,7 @@ Insufficient_Information_Errors <- 0 # how many discrete insufficient informatio
 
 # Assess the causal locus (discrete reproducibility issues) of any reproducibility errors. Note that there doesn't necessarily have to be a one-to-one correspondance between discrete reproducibility issues and reproducibility errors. For example, it could be that the original article neglects to mention that a Greenhouse-Geisser correct was applied to ANOVA outcomes. This might result in multiple reproducibility errors, but there is a single causal locus (discrete reproducibility issue).
 
-locus_typo <- NA # how many discrete issues did you encounter that related to typographical errors?
+locus_typo <- 3 # how many discrete issues did you encounter that related to typographical errors?
 locus_specification <- NA # how many discrete issues did you encounter that related to incomplete, incorrect, or unclear specification of the original analyses?
 locus_analysis <- NA # how many discrete issues did you encounter that related to errors in the authors' original analyses?
 locus_data <- NA # how many discrete issues did you encounter that related to errors in the data files shared by the authors?
@@ -120,14 +206,14 @@ locus_analysis_resolved <- NA # how many discrete issues did you encounter that 
 locus_data_resolved <- NA # how many discrete issues did you encounter that related to errors in the data files shared by the authors?
 locus_unidentified_resolved <- NA # how many discrete issues were there for which you could not identify the cause
 
-Affects_Conclusion <- NA # Do any reproducibility issues encounter appear to affect the conclusions made in the original article? TRUE, FALSE, or NA. This is a subjective judgement, but you should taking into account multiple factors, such as the presence/absence of decision errors, the number of target outcomes that could not be reproduced, the type of outcomes that could or could not be reproduced, the difference in magnitude of effect sizes, and the predictions of the specific hypothesis under scrutiny.
+Affects_Conclusion <- FALSE # Do any reproducibility issues encounter appear to affect the conclusions made in the original article? TRUE, FALSE, or NA. This is a subjective judgement, but you should taking into account multiple factors, such as the presence/absence of decision errors, the number of target outcomes that could not be reproduced, the type of outcomes that could or could not be reproduced, the difference in magnitude of effect sizes, and the predictions of the specific hypothesis under scrutiny.
 ```
 
-[PILOT/COPILOT DOD NOT EDIT THE CODE CHUNK BELOW]
 
 ```{r}
+
 reportObject <- reportObject %>%
-  filter(dummyRow == FALSE) %>% # remove the dummy row
+  filter(dummyRow == FALSE) %>% # remove the dummy row DO NOT CHANGE ANYTHING BELOW HERE
   select(-dummyRow) %>% # remove dummy row designation
   mutate(articleID = articleID) %>% # add variables to report 
   select(articleID, everything()) # make articleID first column
