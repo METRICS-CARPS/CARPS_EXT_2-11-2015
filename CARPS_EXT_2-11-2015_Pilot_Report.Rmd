@@ -201,19 +201,15 @@ ggplot(total, aes(x = "rio", y = mean_rio), aes(x2="unique", y2=mean_unique)) +
 
 ## Inferential statistics
 
+> substantial retroactive interference, confirmed by a 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures analysis of variance (ANOVA), which revealed a significant interaction, F(1, 24) = 13.04, p = .001, ηp 2 = .35.
 
 ```{r}
-
-#substantial retroactive interference, confirmed by a 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures analysis of variance (ANOVA), which revealed a significant interaction, F(1, 24) = 13.04, p = .001, ηp 2 = .35. 
-
-# I have followed the steps indicated in the study, but the description of the analysis in the paper is very ambiguous. I consulted with the TA's and they said that this paper is a good example of "what not to do when describing the analysis"
-
 d_anova <-d %>% 
   filter(experiment == "Experiment 1 No Delay") %>%
   filter((phase == 1 & block == 5) | (phase == 3 & block ==1 ))
 View(d_anova)
 model_anova <-aov(accuracy ~ phase + pair_type, data=d_anova)
-summary.aov(model_anova)
+summary.aov(model_anova) #I have followed the steps indicated in the study, but the description of the analysis in the paper is very ambiguous. I consulted with the TA's and they said that this paper is a good example of "what not to do when describing the analysis"
 
 ```
 
@@ -264,12 +260,8 @@ head(t.savings)
 
 
 ```{r}
-# savings did not transpire for overlapping pairs, p= .56
-
-t.overlapping <- t.test(d_savings_split$overlapping)
-View(t.overlapping)
+t.overlapping <- t.test(d_savings_split$overlapping) # savings did not transpire for overlapping pairs, p= .56
 head(t.overlapping)
-
 ```
 
 
