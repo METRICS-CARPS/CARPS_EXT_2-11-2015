@@ -12,13 +12,13 @@ output:
 
 ```{r}
 articleID <- 2-11-2015  # insert the article ID code here e.g., "10-3-2015_PS"
-reportType <- 'Pilot'  # specify whether this is the 'pilot' report or 'final' report
+reportType <- 'final'  # specify whether this is the 'pilot' report or 'final' report
 pilotNames <- "Pérez, Greses" # insert the pilot's name here e.g., "Tom Hardwicke".  If there are multiple cpilots enter both names in a character string e.g., "Tom Hardwicke, Bob Dylan"
 copilotNames <- "Cachia, Julie Youko Anne" # # insert the co-pilot's name here e.g., "Michael Frank". If there are multiple co-pilots enter both names in a character string e.g., "Tom Hardwicke, Bob Dylan"
 pilotTTC <- 1200 # insert the pilot's estimated time to complete (in minutes, fine to approximate) e.g., 120
 copilotTTC <- 180 # insert the co-pilot's estimated time to complete (in minutes, fine to approximate) e.g., 120
 pilotStartDate <- as.Date("11/02/18",format= "%m/%d/%y") # insert the pilot's start date in US format e.g., as.Date("01/25/18", format = "%m/%d/%y")
-copilotStartDate <- as.Date("11/03/18",format= "%m/%d/%y") # insert the co-pilot's start date in US format e.g., as.Date("01/25/18", format = "%m/%d/%y")
+copilotStartDate <- as.Date("11/08/18",format= "%m/%d/%y") # insert the co-pilot's start date in US format e.g., as.Date("01/25/18", format = "%m/%d/%y")
 completionDate <- as.Date("11/08/18",format= "%m/%d/%y") # copilot insert the date of final report completion (after any necessary rounds of author assistance) in US format e.g., as.Date("01/25/18", format = "%m/%d/%y")
 ```
 
@@ -26,7 +26,7 @@ completionDate <- as.Date("11/08/18",format= "%m/%d/%y") # copilot insert the da
 
 #### Methods summary: 
 
-The authors assamble an experiment where 5-years-olds learned a sets of pictures with pairs of objects associated to a cartoon character to investigate the effects of consolidation on children's memory by introducing a 1 min delay between learning and testing in the no-delay experiment. hree learning phases, 1 and 3 presented identical contingencies and 2 different contingencies. Darby & Sloutsky (2015) also evaluated the results for interference and savings following a 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) analysis of variance (ANOVA). 
+The authors assembled an experiment where 5-years-olds learned a set of pictures with pairs of objects associated to a cartoon character to investigate the effects of consolidation on children's memory by introducing a 1 min delay between learning and testing in the no-delay experiment. Three learning phases, 1 and 3 presented identical contingencies and 2 different contingencies. Darby & Sloutsky (2015) also evaluated the results for interference and savings following a 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) analysis of variance (ANOVA). 
 
 ------
 
@@ -36,11 +36,9 @@ For this article you should focus on the findings reported in the results sectio
 
 Specifically, you should attempt to reproduce all descriptive and inferential analyses reported in the text below and associated tables/figures:
 
-No-delay condition. Results in the no-delay condition pointed to substantial retroactive interference, which was confirmed by a 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures analysis of variance (ANOVA), which revealed a significant interaction, F(1, 24) = 13.04, p = .001, ηp 2 = .35. Planned comparisons indicated that accuracy significantly decreased for overlapping pairs, t(24) = 6.82, p < .001, Cohen’s d = 1.39, but not for unique pairs, p = .46. To determine the extent of retroactive interference effects on children’s memory, we also measured savings effects. Results pointed to savings for unique but not for overlapping pairs: A 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures ANOVA revealed a significant interaction, F(1, 22) = 12.02, p = .002, ηp 2 = .33, with savings transpiring for unique pairs, t(24) = 5.82, p < .001, d = 1.19, but not for overlapping pairs, p = .56. Substantial retroactive interference coupled with no savings for overlapping pairs points to catastrophic- like levels of retroactive interference, which replicates our previous findings (Darby & Sloutsky, 2015).
+> No-delay condition. Results in the no-delay condition pointed to substantial retroactive interference, which was confirmed by a 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures analysis of variance (ANOVA), which revealed a significant interaction, F(1, 24) = 13.04, p = .001, ηp 2 = .35. Planned comparisons indicated that accuracy significantly decreased for overlapping pairs, t(24) = 6.82, p < .001, Cohen’s d = 1.39, but not for unique pairs, p = .46. To determine the extent of retroactive interference effects on children’s memory, we also measured savings effects. Results pointed to savings for unique but not for overlapping pairs: A 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures ANOVA revealed a significant interaction, F(1, 22) = 12.02, p = .002, ηp 2 = .33, with savings transpiring for unique pairs, t(24) = 5.82, p < .001, d = 1.19, but not for overlapping pairs, p = .56. Substantial retroactive interference coupled with no savings for overlapping pairs points to catastrophic- like levels of retroactive interference, which replicates our previous findings (Darby & Sloutsky, 2015).
 
-  Also attempt to reproduce Figure2 Experiment 1 No Delay only.
-
-Note Make sure to use the original article for additional context and information about any necessary pre-processing steps. Also check for additional supplementary materials that may provide supporting documentation for analysis procedures.
+We also attempted to reproduce Figure 2 Experiment 1 No Delay only.
 
 ------
 
@@ -67,6 +65,7 @@ library('scales')     # for scale_y_continuous(label = percent)
 library('ggthemes')   # for scale_fill_few('medium')
 knitr::opts_chunk$set(comment = NA)
 options(ztable.type = 'html')
+#install.packages("ez") #Uncomment and run this line if you do not have "ez" installed
 library(ez)
 ```
 
@@ -79,7 +78,7 @@ reportObject <- data.frame(dummyRow = TRUE, reportedValue = NA, obtainedValue = 
 # Step 2: Load data
 
 ```{r}
-Data <- read_excel("~/Documents/GitHub/CARPS_EXT_2-11-2015/data/All Data for Repository-Final_gp.xlsx")
+Data <- read_excel("data/All Data for Repository-Final_gp.xlsx")
 str(Data)
 head(Data)
 ```
