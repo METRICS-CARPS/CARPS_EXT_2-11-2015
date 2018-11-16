@@ -206,10 +206,8 @@ ggplot(total, aes(x = "rio", y = mean_rio), aes(x2="unique", y2=mean_unique)) +
 d_anova <-d %>% 
   filter(experiment == "Experiment 1 No Delay") %>%
   filter((phase == 1 & block == 5) | (phase == 3 & block ==1 ))
-View(d_anova)
 model_anova <-aov(accuracy ~ phase + pair_type, data=d_anova)
 summary.aov(model_anova) #I have followed the steps indicated in the study, but the description of the analysis in the paper is very ambiguous. I consulted with the TA's and they said that this paper is a good example of "what not to do when describing the analysis"
-
 ```
 
 
@@ -223,28 +221,19 @@ head(t)
 
 
 ```{r}
-
 # accuracy did not decrease for unique pairs, p = .46. 
-
 t.ri.u <- t.test(d_ri$unique)
 head(t.ri.u)
-
 ```
 
+> ####To determine the extent of retroactive interference effects on children’s memory, we also measured savings effects. Results pointed to savings for unique but not for overlapping pairs: A 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures ANOVA revealed a significant interaction, F(1, 22) = 12.02, p = .002, ηp 2 = .33 
 
 ```{r}
-
-#To determine the extent of retroactive interference effects on children’s memory, we also measured savings effects. Results pointed to savings for unique but not for overlapping pairs: A 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures ANOVA revealed a significant interaction, F(1, 22) = 12.02, p = .002, ηp 2 = .33 
-
-# I have followed the steps indicated in the study, but the description of the analysis in the paper is very ambiguous. I consulted with the TA's and they said that this paper is a good example of "what not to do when describing the analysis"
-
 das <- d%>%
   filter(experiment=="Experiment 1 No Delay" & block==1)%>%
   filter((phase==1) |(phase==3))
-View(das)
 model_das <-aov(accuracy~ phase + pair_type, data = das)
-summary.aov(model_das)
-
+summary.aov(model_das) # I have followed the steps indicated in the study, but the description of the analysis in the paper is very ambiguous. I consulted with the TA's and they said that this paper is a good example of "what not to do when describing the analysis"
 ```
 
 
@@ -261,6 +250,58 @@ head(t.savings)
 ```{r}
 t.overlapping <- t.test(d_savings_split$overlapping) # savings did not transpire for overlapping pairs, p= .56
 head(t.overlapping)
+```
+
+# Recording value comparisons: Checking results
+
+```{r}
+# Retroactive interference, F(1,24)= 13.04, p = .001, ηp 2 = .35.
+reportObject <- reproCheck(reportedValue = '13.04', obtainedValue = '16.22', valueType = 'F')
+```
+
+```{r}
+# Retroactive interference, t(24) = 6.82, p < .001, Cohen’s d = 1.39, but not for unique pairs, p = .46. 
+reportObject <- reproCheck(reportedValue = '6.82', obtainedValue = '6.819598', valueType = 't')
+```
+
+```{r}
+# Retroactive interference, t(24) = 6.82, p < .001, Cohen’s d = 1.39, but not for unique pairs, p = .46. 
+reportObject <- reproCheck(reportedValue = '.001', obtainedValue = '0.0000004711565', valueType = 'p', eyeballCheck = TRUE)
+```
+
+```{r}
+# Retroactive interference, t(24) = 6.82, p < .001, Cohen’s d = 1.39, but not for unique pairs, p = .46. 
+reportObject <- reproCheck(reportedValue = '.46', obtainedValue = '0.4609768', valueType = 'p', eyeballCheck = TRUE)
+```
+
+
+```{r}
+# savings for unique but not for overlapping pairs: A 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures ANOVA revealed a significant interaction, F(1, 22) = 12.02, p = .002, ηp 2 = .33. 
+reportObject <- reproCheck(reportedValue = '12.02', obtainedValue = '14.825', valueType = 'F')
+```
+
+
+```{r}
+# savings for unique but not for overlapping pairs: A 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures ANOVA revealed a significant interaction, F(1, 22) = 12.02, p = .002, ηp 2 = .33. 
+reportObject <- reproCheck(reportedValue = '.002', obtainedValue = '0.000212', valueType = 'p', eyeballCheck = TRUE)
+```
+
+
+```{r}
+# savings transpiring for unique pairs, t(24) = 5.82, p < .001, d = 1.19.
+reportObject <- reproCheck(reportedValue = '5.82', obtainedValue = '5.818182', valueType = 't')
+```
+
+
+```{r}
+# savings transpiring for unique pairs, t(24) = 5.82, p < .001, d = 1.19.
+reportObject <- reproCheck(reportedValue = '.001', obtainedValue = '.000005336859', valueType = 'p',eyeballCheck= TRUE)
+```
+
+
+```{r}
+# savings transpiring for unique pairs, t(24) = 5.82, p < .001, d = 1.19, but not for overlapping pairs, p = .56.
+reportObject <- reproCheck(reportedValue = '.56', obtainedValue = '0.5572916', valueType = 'p',eyeballCheck= TRUE)
 ```
 
 

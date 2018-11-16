@@ -227,27 +227,28 @@ div.tocify {
 <div id="report-details" class="section level1">
 <h1>Report Details</h1>
 <pre class="r"><code>articleID &lt;- 2-11-2015  # insert the article ID code here e.g., &quot;10-3-2015_PS&quot;
-reportType &lt;- 'Pilot'  # specify whether this is the 'pilot' report or 'final' report
+reportType &lt;- 'final'  # specify whether this is the 'pilot' report or 'final' report
 pilotNames &lt;- &quot;Pérez, Greses&quot; # insert the pilot's name here e.g., &quot;Tom Hardwicke&quot;.  If there are multiple cpilots enter both names in a character string e.g., &quot;Tom Hardwicke, Bob Dylan&quot;
 copilotNames &lt;- &quot;Cachia, Julie Youko Anne&quot; # # insert the co-pilot's name here e.g., &quot;Michael Frank&quot;. If there are multiple co-pilots enter both names in a character string e.g., &quot;Tom Hardwicke, Bob Dylan&quot;
 pilotTTC &lt;- 1200 # insert the pilot's estimated time to complete (in minutes, fine to approximate) e.g., 120
 copilotTTC &lt;- 180 # insert the co-pilot's estimated time to complete (in minutes, fine to approximate) e.g., 120
 pilotStartDate &lt;- as.Date(&quot;11/02/18&quot;,format= &quot;%m/%d/%y&quot;) # insert the pilot's start date in US format e.g., as.Date(&quot;01/25/18&quot;, format = &quot;%m/%d/%y&quot;)
-copilotStartDate &lt;- as.Date(&quot;11/03/18&quot;,format= &quot;%m/%d/%y&quot;) # insert the co-pilot's start date in US format e.g., as.Date(&quot;01/25/18&quot;, format = &quot;%m/%d/%y&quot;)
+copilotStartDate &lt;- as.Date(&quot;11/08/18&quot;,format= &quot;%m/%d/%y&quot;) # insert the co-pilot's start date in US format e.g., as.Date(&quot;01/25/18&quot;, format = &quot;%m/%d/%y&quot;)
 completionDate &lt;- as.Date(&quot;11/08/18&quot;,format= &quot;%m/%d/%y&quot;) # copilot insert the date of final report completion (after any necessary rounds of author assistance) in US format e.g., as.Date(&quot;01/25/18&quot;, format = &quot;%m/%d/%y&quot;)</code></pre>
 <hr />
 <div id="methods-summary" class="section level4">
 <h4>Methods summary:</h4>
-<p>The authors assamble an experiment where 5-years-olds learned a sets of pictures with pairs of objects associated to a cartoon character to investigate the effects of consolidation on children’s memory by introducing a 1 min delay between learning and testing in the no-delay experiment. hree learning phases, 1 and 3 presented identical contingencies and 2 different contingencies. Darby &amp; Sloutsky (2015) also evaluated the results for interference and savings following a 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) analysis of variance (ANOVA).</p>
+<p>The authors assembled an experiment where 5-years-olds learned a set of pictures with pairs of objects associated to a cartoon character to investigate the effects of consolidation on children’s memory by introducing a 1 min delay between learning and testing in the no-delay experiment. Three learning phases, 1 and 3 presented identical contingencies and 2 different contingencies. Darby &amp; Sloutsky (2015) also evaluated the results for interference and savings following a 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) analysis of variance (ANOVA).</p>
 <hr />
 </div>
 <div id="target-outcomes" class="section level4">
 <h4>Target outcomes:</h4>
 <p>For this article you should focus on the findings reported in the results section for Experiment 1.</p>
 <p>Specifically, you should attempt to reproduce all descriptive and inferential analyses reported in the text below and associated tables/figures:</p>
+<blockquote>
 <p>No-delay condition. Results in the no-delay condition pointed to substantial retroactive interference, which was confirmed by a 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures analysis of variance (ANOVA), which revealed a significant interaction, F(1, 24) = 13.04, p = .001, ηp 2 = .35. Planned comparisons indicated that accuracy significantly decreased for overlapping pairs, t(24) = 6.82, p &lt; .001, Cohen’s d = 1.39, but not for unique pairs, p = .46. To determine the extent of retroactive interference effects on children’s memory, we also measured savings effects. Results pointed to savings for unique but not for overlapping pairs: A 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures ANOVA revealed a significant interaction, F(1, 22) = 12.02, p = .002, ηp 2 = .33, with savings transpiring for unique pairs, t(24) = 5.82, p &lt; .001, d = 1.19, but not for overlapping pairs, p = .56. Substantial retroactive interference coupled with no savings for overlapping pairs points to catastrophic- like levels of retroactive interference, which replicates our previous findings (Darby &amp; Sloutsky, 2015).</p>
-<p>Also attempt to reproduce Figure2 Experiment 1 No Delay only.</p>
-<p>Note Make sure to use the original article for additional context and information about any necessary pre-processing steps. Also check for additional supplementary materials that may provide supporting documentation for analysis procedures.</p>
+</blockquote>
+<p>We also attempted to reproduce Figure 2 Experiment 1 No Delay only.</p>
 <hr />
 </div>
 </div>
@@ -268,13 +269,14 @@ library('scales')     # for scale_y_continuous(label = percent)
 library('ggthemes')   # for scale_fill_few('medium')
 knitr::opts_chunk$set(comment = NA)
 options(ztable.type = 'html')
+#install.packages(&quot;ez&quot;) #Uncomment and run this line if you do not have &quot;ez&quot; installed
 library(ez)</code></pre>
 <pre class="r"><code># Prepare report object. This will be updated automatically by the reproCheck function each time values are compared
 reportObject &lt;- data.frame(dummyRow = TRUE, reportedValue = NA, obtainedValue = NA, valueType = NA, percentageError = NA, comparisonOutcome = NA, eyeballCheck = NA)</code></pre>
 </div>
 <div id="step-2-load-data" class="section level1">
 <h1>Step 2: Load data</h1>
-<pre class="r"><code>Data &lt;- read_excel(&quot;~/Documents/GitHub/CARPS_EXT_2-11-2015/data/All Data for Repository-Final_gp.xlsx&quot;)
+<pre class="r"><code>Data &lt;- read_excel(&quot;data/All Data for Repository-Final_gp.xlsx&quot;)
 str(Data)</code></pre>
 <pre><code>Classes 'tbl_df', 'tbl' and 'data.frame':   2370 obs. of  6 variables:
  $ experiment: chr  &quot;Experiment 1 No Delay&quot; &quot;Experiment 1 No Delay&quot; &quot;Experiment 1 No Delay&quot; &quot;Experiment 1 No Delay&quot; ...
@@ -475,7 +477,6 @@ ggplot(total, aes(x = &quot;rio&quot;, y = mean_rio), aes(x2=&quot;unique&quot;,
 <pre class="r"><code>d_anova &lt;-d %&gt;% 
   filter(experiment == &quot;Experiment 1 No Delay&quot;) %&gt;%
   filter((phase == 1 &amp; block == 5) | (phase == 3 &amp; block ==1 ))
-View(d_anova)
 model_anova &lt;-aov(accuracy ~ phase + pair_type, data=d_anova)
 summary.aov(model_anova) #I have followed the steps indicated in the study, but the description of the analysis in the paper is very ambiguous. I consulted with the TA's and they said that this paper is a good example of &quot;what not to do when describing the analysis&quot;</code></pre>
 <pre><code>            Df Sum Sq Mean Sq F value   Pr(&gt;F)    
@@ -512,7 +513,6 @@ $null.value
 mean 
    0 </code></pre>
 <pre class="r"><code># accuracy did not decrease for unique pairs, p = .46. 
-
 t.ri.u &lt;- t.test(d_ri$unique)
 head(t.ri.u)</code></pre>
 <pre><code>$statistic
@@ -538,16 +538,14 @@ mean of x
 $null.value
 mean 
    0 </code></pre>
-<pre class="r"><code>#To determine the extent of retroactive interference effects on children’s memory, we also measured savings effects. Results pointed to savings for unique but not for overlapping pairs: A 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures ANOVA revealed a significant interaction, F(1, 22) = 12.02, p = .002, ηp 2 = .33 
-
-# I have followed the steps indicated in the study, but the description of the analysis in the paper is very ambiguous. I consulted with the TA's and they said that this paper is a good example of &quot;what not to do when describing the analysis&quot;
-
-das &lt;- d%&gt;%
+<blockquote>
+<h4 id="to-determine-the-extent-of-retroactive-interference-effects-on-childrens-memory-we-also-measured-savings-effects.-results-pointed-to-savings-for-unique-but-not-for-overlapping-pairs-a-2-phase-1-vs.3-2-pair-type-overlapping-vs.unique-repeated-measures-anova-revealed-a-significant-interaction-f1-22-12.02-p-.002-p-2-.33">To determine the extent of retroactive interference effects on children’s memory, we also measured savings effects. Results pointed to savings for unique but not for overlapping pairs: A 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures ANOVA revealed a significant interaction, F(1, 22) = 12.02, p = .002, ηp 2 = .33</h4>
+</blockquote>
+<pre class="r"><code>das &lt;- d%&gt;%
   filter(experiment==&quot;Experiment 1 No Delay&quot; &amp; block==1)%&gt;%
   filter((phase==1) |(phase==3))
-View(das)
 model_das &lt;-aov(accuracy~ phase + pair_type, data = das)
-summary.aov(model_das)</code></pre>
+summary.aov(model_das) # I have followed the steps indicated in the study, but the description of the analysis in the paper is very ambiguous. I consulted with the TA's and they said that this paper is a good example of &quot;what not to do when describing the analysis&quot;</code></pre>
 <pre><code>            Df Sum Sq Mean Sq F value   Pr(&gt;F)    
 phase        1   0.81  0.8100  14.825 0.000212 ***
 pair_type    1   0.25  0.2500   4.575 0.034943 *  
@@ -607,6 +605,36 @@ $null.value
 mean 
    0 </code></pre>
 </div>
+</div>
+<div id="recording-value-comparisons-checking-results" class="section level1">
+<h1>Recording value comparisons: Checking results</h1>
+<pre class="r"><code># Retroactive interference, F(1,24)= 13.04, p = .001, ηp 2 = .35.
+reportObject &lt;- reproCheck(reportedValue = '13.04', obtainedValue = '16.22', valueType = 'F')</code></pre>
+<pre><code>[1] &quot;MAJOR_ERROR for F. The reported value (13.04) and the obtained value (16.22) differed by 24.39%. Note that the obtained value was rounded to 2 decimal places to match the reported value.&quot;</code></pre>
+<pre class="r"><code># Retroactive interference, t(24) = 6.82, p &lt; .001, Cohen’s d = 1.39, but not for unique pairs, p = .46. 
+reportObject &lt;- reproCheck(reportedValue = '6.82', obtainedValue = '6.819598', valueType = 't')</code></pre>
+<pre><code>[1] &quot;MATCH for t. The reported value (6.82) and the obtained value (6.82) differed by 0%. Note that the obtained value was rounded to 2 decimal places to match the reported value.&quot;</code></pre>
+<pre class="r"><code># Retroactive interference, t(24) = 6.82, p &lt; .001, Cohen’s d = 1.39, but not for unique pairs, p = .46. 
+reportObject &lt;- reproCheck(reportedValue = '.001', obtainedValue = '0.0000004711565', valueType = 'p', eyeballCheck = TRUE)</code></pre>
+<pre><code>[1] &quot;MATCH for p. Eyeball comparison only.&quot;</code></pre>
+<pre class="r"><code># Retroactive interference, t(24) = 6.82, p &lt; .001, Cohen’s d = 1.39, but not for unique pairs, p = .46. 
+reportObject &lt;- reproCheck(reportedValue = '.46', obtainedValue = '0.4609768', valueType = 'p', eyeballCheck = TRUE)</code></pre>
+<pre><code>[1] &quot;MATCH for p. Eyeball comparison only.&quot;</code></pre>
+<pre class="r"><code># savings for unique but not for overlapping pairs: A 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures ANOVA revealed a significant interaction, F(1, 22) = 12.02, p = .002, ηp 2 = .33. 
+reportObject &lt;- reproCheck(reportedValue = '12.02', obtainedValue = '14.825', valueType = 'F')</code></pre>
+<pre><code>[1] &quot;MAJOR_ERROR for F. The reported value (12.02) and the obtained value (14.82) differed by 23.29%. Note that the obtained value was rounded to 2 decimal places to match the reported value.&quot;</code></pre>
+<pre class="r"><code># savings for unique but not for overlapping pairs: A 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures ANOVA revealed a significant interaction, F(1, 22) = 12.02, p = .002, ηp 2 = .33. 
+reportObject &lt;- reproCheck(reportedValue = '.002', obtainedValue = '0.000212', valueType = 'p', eyeballCheck = TRUE)</code></pre>
+<pre><code>[1] &quot;MATCH for p. Eyeball comparison only.&quot;</code></pre>
+<pre class="r"><code># savings transpiring for unique pairs, t(24) = 5.82, p &lt; .001, d = 1.19.
+reportObject &lt;- reproCheck(reportedValue = '5.82', obtainedValue = '5.818182', valueType = 't')</code></pre>
+<pre><code>[1] &quot;MATCH for t. The reported value (5.82) and the obtained value (5.82) differed by 0%. Note that the obtained value was rounded to 2 decimal places to match the reported value.&quot;</code></pre>
+<pre class="r"><code># savings transpiring for unique pairs, t(24) = 5.82, p &lt; .001, d = 1.19.
+reportObject &lt;- reproCheck(reportedValue = '.001', obtainedValue = '.000005336859', valueType = 'p',eyeballCheck= TRUE)</code></pre>
+<pre><code>[1] &quot;MATCH for p. Eyeball comparison only.&quot;</code></pre>
+<pre class="r"><code># savings transpiring for unique pairs, t(24) = 5.82, p &lt; .001, d = 1.19, but not for overlapping pairs, p = .56.
+reportObject &lt;- reproCheck(reportedValue = '.56', obtainedValue = '0.5572916', valueType = 'p',eyeballCheck= TRUE)</code></pre>
+<pre><code>[1] &quot;MATCH for p. Eyeball comparison only.&quot;</code></pre>
 </div>
 <div id="step-5-conclusion" class="section level1">
 <h1>Step 5: Conclusion</h1>
@@ -679,7 +707,7 @@ if(reportType == &quot;final&quot;){
  collate  en_US.UTF-8                 
  ctype    en_US.UTF-8                 
  tz       America/Los_Angeles         
- date     2018-11-08                  
+ date     2018-11-11                  
 
 ─ Packages ──────────────────────────────────────────────────────────────
  package      * version  date       lib
