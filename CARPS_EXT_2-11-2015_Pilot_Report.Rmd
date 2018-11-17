@@ -16,7 +16,7 @@ reportType <- 'final'  # specify whether this is the 'pilot' report or 'final' r
 pilotNames <- "Pérez, Greses" # insert the pilot's name here e.g., "Tom Hardwicke".  If there are multiple cpilots enter both names in a character string e.g., "Tom Hardwicke, Bob Dylan"
 copilotNames <- "Cachia, Julie Youko Anne" # # insert the co-pilot's name here e.g., "Michael Frank". If there are multiple co-pilots enter both names in a character string e.g., "Tom Hardwicke, Bob Dylan"
 pilotTTC <- 1200 # insert the pilot's estimated time to complete (in minutes, fine to approximate) e.g., 120
-copilotTTC <- 180 # insert the co-pilot's estimated time to complete (in minutes, fine to approximate) e.g., 120
+copilotTTC <- 300 # insert the co-pilot's estimated time to complete (in minutes, fine to approximate) e.g., 120
 pilotStartDate <- as.Date("11/02/18",format= "%m/%d/%y") # insert the pilot's start date in US format e.g., as.Date("01/25/18", format = "%m/%d/%y")
 copilotStartDate <- as.Date("11/08/18",format= "%m/%d/%y") # insert the co-pilot's start date in US format e.g., as.Date("01/25/18", format = "%m/%d/%y")
 completionDate <- as.Date("11/08/18",format= "%m/%d/%y") # copilot insert the date of final report completion (after any necessary rounds of author assistance) in US format e.g., as.Date("01/25/18", format = "%m/%d/%y")
@@ -67,6 +67,7 @@ knitr::opts_chunk$set(comment = NA)
 options(ztable.type = 'html')
 #install.packages("ez") #Uncomment and run this line if you do not have "ez" installed
 library(ez)
+library(lsr) #for ANOVA effect size calculations
 ```
 
 
@@ -96,6 +97,9 @@ summary(Data)
 ```
 
 # Step 4: Run analysis
+
+Results in the no-delay condition pointed to substantial retroactive interference, which was confirmed by a 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures analysis of variance (ANOVA), which revealed a significant interaction, F(1,24) = 13.04, p = .001, ηp 2 = .35. Planned comparisons indicated that accuracy significantly decreased for overlapping pairs, t(24) = 6.82, p < .001, Cohen’s d = 1.39, but not for unique pairs, p = .46. To determine the extent of retroactive interference effects on children’s memory, we also measured savings effects. Results pointed to savings for unique but not for overlapping pairs: A 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures ANOVA revealed a significant interaction, F(1, 22) = 12.02, p = .002, ηp 2 = .33, with savings transpiring for unique pairs, t(24) = 5.82, p < .001, d = 1.19, but not for overlapping pairs, p = .56. Substantial retroactive interference coupled with no savings for overlapping pairs points to catastrophic- like levels of retroactive interference, which replicates our previous findings (Darby & Sloutsky, 2015).
+Also attempt to reproduce Figure2 Experiment 1 No Delay only.
 
 ## Pre-processing
 
@@ -174,7 +178,7 @@ d_ri <- d_pre_ri %>%
 head(d_ri) 
 
 ggplot(d_ri, aes(x = "Retroactive Interference", y = mean_rio)) +
-         geom_count() # I did not know how to turn these values into rows, so I could create teh graph as shown on page p. 1939 of the study. 
+         geom_count() # I did not know how to turn these values into rows, so I could create the graph as shown on page p. 1939 of the study. 
 ```
 
 ```{r}
@@ -207,7 +211,10 @@ d_anova <-d %>%
   filter(experiment == "Experiment 1 No Delay") %>%
   filter((phase == 1 & block == 5) | (phase == 3 & block ==1 ))
 model_anova <-aov(accuracy ~ phase + pair_type, data=d_anova)
-summary.aov(model_anova) #I have followed the steps indicated in the study, but the description of the analysis in the paper is very ambiguous. I consulted with the TA's and they said that this paper is a good example of "what not to do when describing the analysis"
+mainF <- summary.aov(model_anova) #I have followed the steps indicated in the study, but the description of the analysis in the paper is very ambiguous. I consulted with the TA's and they said that this paper is a good example of "what not to do when describing the analysis"
+mainF
+
+EtaSquared <- etaSquared(model_anova)
 ```
 
 
@@ -232,8 +239,12 @@ head(t.ri.u)
 das <- d%>%
   filter(experiment=="Experiment 1 No Delay" & block==1)%>%
   filter((phase==1) |(phase==3))
-model_das <-aov(accuracy~ phase + pair_type, data = das)
-summary.aov(model_das) # I have followed the steps indicated in the study, but the description of the analysis in the paper is very ambiguous. I consulted with the TA's and they said that this paper is a good example of "what not to do when describing the analysis"
+model_das <-aov(accuracy~ phase * pair_type, data = das)
+MainF2 <- summary.aov(model_das) # I have followed the steps indicated in the study, but the description of the analysis in the paper is very ambiguous. I consulted with the TA's and they said that this paper is a good example of "what not to do when describing the analysis"
+
+MainF2 
+
+EtaSquared <- etaSquared(model_das)
 ```
 
 
@@ -254,56 +265,96 @@ head(t.overlapping)
 
 # Recording value comparisons: Checking results
 
+## Retroactive interference, F(1,24)= 13.04, p = .001, ηp 2 = .35.
+
+### Df values:
+
 ```{r}
-# Retroactive interference, F(1,24)= 13.04, p = .001, ηp 2 = .35.
-reportObject <- reproCheck(reportedValue = '13.04', obtainedValue = '16.22', valueType = 'F')
+reportObject <- reproCheck(reportedValue = '1', obtainedValue = mainF[[1]]$Df[2], valueType = 'df')
 ```
 
 ```{r}
-# Retroactive interference, t(24) = 6.82, p < .001, Cohen’s d = 1.39, but not for unique pairs, p = .46. 
-reportObject <- reproCheck(reportedValue = '6.82', obtainedValue = '6.819598', valueType = 't')
+reportObject <- reproCheck(reportedValue = '24', obtainedValue = mainF[[1]]$Df[3], valueType = 'df')
+```
+
+### F Value:
+
+```{r}
+reportObject <- reproCheck(reportedValue = '13.04', obtainedValue = mainF[[1]]$F[1], valueType = 'F')
+```
+
+### P value:
+
+```{r}
+reportObject <- reproCheck(reportedValue = '0.001', obtainedValue = mainF[[1]]$`Pr(>F)`[2], valueType = 'p')
+```
+
+## Retroactive interference, t(24) = 6.82, p < .001, Cohen’s d = 1.39, but not for unique pairs, p = .46.
+
+### Df value:
+
+```{r}
+reportObject <- reproCheck(reportedValue = '24', obtainedValue = t[[2]], valueType = 'df')
+```
+
+### T value:
+```{r}
+reportObject <- reproCheck(reportedValue = '6.82', obtainedValue = t[[1]], valueType = 't')
+```
+
+### P value:
+```{r}
+reportObject <- reproCheck(reportedValue = '< .001', obtainedValue = t[[3]], valueType = 'p', eyeballCheck = TRUE)
+```
+
+### Unique pairs p: 
+```{r}
+reportObject <- reproCheck(reportedValue = '.46', obtainedValue = t.ri.u[[3]], valueType = 'p', eyeballCheck = TRUE)
+```
+
+## Savings for unique but not for overlapping pairs: A 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures ANOVA revealed a significant interaction, F(1, 22) = 12.02, p = .002, ηp 2 = .33. 
+
+### Df values
+
+```{r}
+reportObject <- reproCheck(reportedValue = '1', obtainedValue = MainF2[[1]][1,1], valueType = 'df')
 ```
 
 ```{r}
-# Retroactive interference, t(24) = 6.82, p < .001, Cohen’s d = 1.39, but not for unique pairs, p = .46. 
-reportObject <- reproCheck(reportedValue = '.001', obtainedValue = '0.0000004711565', valueType = 'p', eyeballCheck = TRUE)
+reportObject <- reproCheck(reportedValue = '22', obtainedValue = MainF2[[1]][3,1], valueType = 'df')
 ```
+
+### F value
 
 ```{r}
-# Retroactive interference, t(24) = 6.82, p < .001, Cohen’s d = 1.39, but not for unique pairs, p = .46. 
-reportObject <- reproCheck(reportedValue = '.46', obtainedValue = '0.4609768', valueType = 'p', eyeballCheck = TRUE)
+reportObject <- reproCheck(reportedValue = '12.02', obtainedValue = MainF2[[1]]$`F value`[3], valueType = 'F')
 ```
-
+### P value
 
 ```{r}
-# savings for unique but not for overlapping pairs: A 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures ANOVA revealed a significant interaction, F(1, 22) = 12.02, p = .002, ηp 2 = .33. 
-reportObject <- reproCheck(reportedValue = '12.02', obtainedValue = '14.825', valueType = 'F')
+reportObject <- reproCheck(reportedValue = '.002', obtainedValue = MainF2[[1]]$`Pr(>F)`[3], valueType = 'p')
 ```
-
+### Eta squared
 
 ```{r}
-# savings for unique but not for overlapping pairs: A 2 (phase: 1 vs. 3) × 2 (pair type: overlapping vs. unique) repeated measures ANOVA revealed a significant interaction, F(1, 22) = 12.02, p = .002, ηp 2 = .33. 
-reportObject <- reproCheck(reportedValue = '.002', obtainedValue = '0.000212', valueType = 'p', eyeballCheck = TRUE)
+reportObject <- reproCheck(reportedValue = '.33', obtainedValue = EtaSquared[3,1], valueType = 'other')
 ```
+## Savings transpiring for unique pairs, t(24) = 5.82, p < .001, d = 1.19.
 
-
+### Df Value
 ```{r}
-# savings transpiring for unique pairs, t(24) = 5.82, p < .001, d = 1.19.
-reportObject <- reproCheck(reportedValue = '5.82', obtainedValue = '5.818182', valueType = 't')
+reportObject <- reproCheck(reportedValue = '24', obtainedValue = t.savings[[2]], valueType = 'df')
 ```
 
-
+### T value
 ```{r}
-# savings transpiring for unique pairs, t(24) = 5.82, p < .001, d = 1.19.
-reportObject <- reproCheck(reportedValue = '.001', obtainedValue = '.000005336859', valueType = 'p',eyeballCheck= TRUE)
+reportObject <- reproCheck(reportedValue = '5.82', obtainedValue = t.savings[[1]], valueType = 't')
 ```
 
-
+### P value
 ```{r}
-# savings transpiring for unique pairs, t(24) = 5.82, p < .001, d = 1.19, but not for overlapping pairs, p = .56.
-reportObject <- reproCheck(reportedValue = '.56', obtainedValue = '0.5572916', valueType = 'p',eyeballCheck= TRUE)
+reportObject <- reproCheck(reportedValue = '<.001', obtainedValue = t.savings[[3]], valueType = 'p',eyeballCheck= TRUE)
 ```
-
 
 # Step 5: Conclusion
 
